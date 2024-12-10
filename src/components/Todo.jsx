@@ -50,6 +50,7 @@ const TodoApp = ({handleTaskClick}) => {
   useEffect(() => {
     getUser().then((result) => {
       setUser(result.data);
+      setCart(result.data.cart);
     })
   }, [])
   
@@ -67,6 +68,7 @@ const TodoApp = ({handleTaskClick}) => {
     if (taskInput.title.trim()) {
       try {
         const newTask = await addTodo(taskInput);
+        console.log(newTask)
         setTasks([newTask.data, ...tasks]); // Add task at the top
         setTaskInput({
           title: '',
@@ -146,8 +148,10 @@ const TodoApp = ({handleTaskClick}) => {
   const addToCart = async (taskId) => {
     try {
      const addedToCart =  await addToCartApi(taskId);
-     setCart((prevCart) => [...prevCart, addedToCart]);
-        console.log(addedToCart)
+     console.log("addedToCart",addedToCart )
+
+     setCart(addedToCart.data);
+     console.log("cart",cart )
     } catch (error) {
       console.error('Error deleting selected tasks:', error);
     }
@@ -377,14 +381,20 @@ const TodoApp = ({handleTaskClick}) => {
                       &#10005;
                     </button>
 
-                    {user && user.cart.includes(task._id)  ? 
-                    <></>:
-                    <button
-                      onClick={() => addToCart(task._id)}
-                      className="text-white bg-black rounded p-2 hover:text-red-600"
-                    >
-                        Add to Cart
-                    </button>
+                    {cart.includes(task._id) ? 
+                   
+                   
+                   <button
+                   onClick={()=> navigate('/cart')}
+                   className="w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                 >
+                   Go to Cart</button>:
+                     <button
+                     onClick={() => addToCart(task._id)}
+                     className="text-white bg-black rounded p-2 hover:text-red-600"
+                   >
+                       Add to Cart 
+                   </button>
                     }
                   </div>
                 </li>
